@@ -4,7 +4,6 @@
 [![ROS 2](https://img.shields.io/badge/ROS_2-Jazzy-blue)](https://docs.ros.org/en/jazzy)
 [![Gazebo](https://img.shields.io/badge/Gazebo-Harmonic-orange)](https://gazebosim.org/docs/harmonic)
 [![Python](https://img.shields.io/badge/Python-3.12-green)](https://python.org)
-[![License](https://img.shields.io/badge/License-MIT-lightgrey)](LICENSE)
 
 ---
 
@@ -236,7 +235,3 @@ python3 ~/cartpole_ws/src/cartpole_control/cartpole_control/plot_results.py
 6. [Gazebo Harmonic Docs](https://gazebosim.org/docs/harmonic)
 
 ---
-
-## License
-
-MIT License — see [LICENSE](LICENSE) for details.
