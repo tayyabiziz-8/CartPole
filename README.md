@@ -9,7 +9,7 @@
 
 ## Overview
 
-Full implementation of an **LQR controller with Luenberger state observer** for stabilizing an inverted pendulum on a cart (CartPole) — a canonical unstable underactuated system in control theory.
+Full implementation of an **LQR controller with Luenberger state observer** for stabilizing an inverted pendulum on a cart (CartPole), a canonical unstable underactuated system in control theory.
 
 The project covers the complete linear control workflow:
 
