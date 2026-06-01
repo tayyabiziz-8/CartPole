@@ -1,0 +1,143 @@
+<?xml version="1.0"?>
+<robot name="cartpole" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:property name="cart_mass"   value="1.0"/>
+  <xacro:property name="pole_mass"   value="0.1"/>
+  <xacro:property name="cart_width"  value="0.4"/>
+  <xacro:property name="cart_height" value="0.1"/>
+  <xacro:property name="cart_depth"  value="0.2"/>
+  <xacro:property name="pole_length" value="1.0"/>
+  <xacro:property name="pole_radius" value="0.025"/>
+
+  <link name="world"/>
+
+  <joint name="rail_joint" type="fixed">
+    <parent link="world"/>
+    <child  link="rail"/>
+    <origin xyz="0 0 0.05" rpy="0 0 0"/>
+  </joint>
+
+  <link name="rail">
+    <visual>
+      <geometry><box size="4.0 0.05 0.05"/></geometry>
+      <material name="gray"><color rgba="0.5 0.5 0.5 1"/></material>
+    </visual>
+    <collision>
+      <geometry><box size="4.0 0.05 0.05"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="10.0"/>
+      <inertia ixx="0.1" ixy="0" ixz="0"
+               iyy="0.1" iyz="0" izz="0.1"/>
+    </inertial>
+  </link>
+
+  <joint name="slider_joint" type="prismatic">
+    <parent link="rail"/>
+    <child  link="cart"/>
+    <origin xyz="0 0 0.075" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-1.9" upper="1.9" effort="100" velocity="10"/>
+    <dynamics damping="0.1" friction="0.0"/>
+  </joint>
+
+  <link name="cart">
+    <visual>
+      <geometry>
+        <box size="${cart_width} ${cart_depth} ${cart_height}"/>
+      </geometry>
+      <material name="blue"><color rgba="0.2 0.4 0.8 1"/></material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${cart_width} ${cart_depth} ${cart_height}"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="${cart_mass}"/>
+      <inertia
+        ixx="${cart_mass*(cart_depth*cart_depth+cart_height*cart_height)/12}"
+        ixy="0" ixz="0"
+        iyy="${cart_mass*(cart_width*cart_width+cart_height*cart_height)/12}"
+        iyz="0"
+        izz="${cart_mass*(cart_width*cart_width+cart_depth*cart_depth)/12}"/>
+    </inertial>
+  </link>
+
+  <joint name="pole_joint" type="revolute">
+    <parent link="cart"/>
+    <child  link="pole"/>
+    <origin xyz="0 0 ${cart_height/2}" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-3.14159" upper="3.14159" effort="0" velocity="100"/>
+    <dynamics damping="0.001" friction="0.0"/>
+    
+  </joint>
+
+  <link name="pole">
+    <visual>
+      <origin xyz="0 0 ${pole_length/2}" rpy="0 0 0"/>
+      <geometry>
+        <cylinder length="${pole_length}" radius="${pole_radius}"/>
+      </geometry>
+      <material name="red"><color rgba="0.8 0.2 0.2 1"/></material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 ${pole_length/2}" rpy="0 0 0"/>
+      <geometry>
+        <cylinder length="${pole_length}" radius="${pole_radius}"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 ${pole_length/2}" rpy="0 0 0"/>
+      <mass value="${pole_mass}"/>
+      <inertia
+        ixx="${pole_mass*(3*pole_radius*pole_radius+pole_length*pole_length)/12}"
+        ixy="0" ixz="0"
+        iyy="${pole_mass*(3*pole_radius*pole_radius+pole_length*pole_length)/12}"
+        iyz="0"
+        izz="${pole_mass*pole_radius*pole_radius/2}"/>
+    </inertial>
+  </link>
+
+  <joint name="bob_joint" type="fixed">
+    <parent link="pole"/>
+    <child  link="bob"/>
+    <origin xyz="0 0 ${pole_length}" rpy="0 0 0"/>
+  </joint>
+
+  <link name="bob">
+    <visual>
+      <geometry><sphere radius="0.04"/></geometry>
+      <material name="orange"><color rgba="1.0 0.5 0.0 1"/></material>
+    </visual>
+    <collision>
+      <geometry><sphere radius="0.04"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="0.001"/>
+      <inertia ixx="0.000001" ixy="0" ixz="0"
+               iyy="0.000001" iyz="0" izz="0.000001"/>
+    </inertial>
+  </link>
+
+  <!-- Joint state publisher - correct topic type for Harmonic -->
+  <gazebo>
+    <plugin filename="gz-sim-joint-state-publisher-system"
+            name="gz::sim::systems::JointStatePublisher">
+      <topic>/world/cartpole_world/model/cartpole/joint_state</topic>
+      <joint_name>slider_joint</joint_name>
+      <joint_name>pole_joint</joint_name>
+    </plugin>
+  </gazebo>
+
+  <!-- Apply force to slider joint -->
+  <gazebo>
+    <plugin filename="gz-sim-apply-joint-force-system"
+            name="gz::sim::systems::ApplyJointForce">
+      <joint_name>slider_joint</joint_name>
+      <topic>/cart_force_gz</topic>
+    </plugin>
+  </gazebo>
+
+</robot>
