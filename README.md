@@ -1,5 +1,5 @@
-# CartPole LQR — Inverted Pendulum Stabilization
-### CS424/CS524: Robotics and Control — 6th Semester Final Project
+# CartPole LQR - Inverted Pendulum Stabilization
+### CS424/CS524: Robotics and Control - 6th Semester Final Project
 
 [![ROS 2](https://img.shields.io/badge/ROS_2-Jazzy-blue)](https://docs.ros.org/en/jazzy)
 [![Gazebo](https://img.shields.io/badge/Gazebo-Harmonic-orange)](https://gazebosim.org/docs/harmonic)
